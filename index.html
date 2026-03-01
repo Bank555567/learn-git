@@ -41,7 +41,6 @@
         let currentLon = null;
         let floodRiskArea = null; // เก็บพื้นที่สีฟ้า
         let floodDirection = null; // เก็บทิศทางการไหลของน้ำ
-        let currentMarker = null; // เก็บ Marker ของตำแหน่งล่าสุด
 
         // Function to fetch and display location using Geolocation API
         function getLocation() {
@@ -65,7 +64,7 @@
             map.setView([currentLat, currentLon], 12); // Zoom in on the current position
 
             // Add a marker to the map
-            currentMarker = L.marker([currentLat, currentLon]).addTo(map)
+            L.marker([currentLat, currentLon]).addTo(map)
                 .bindPopup(`<b>Your Location</b><br>Lat: ${currentLat}, Lon: ${currentLon}`)
                 .openPopup();
 
@@ -99,9 +98,6 @@
             }
 
             // ลบพื้นที่เดิมถ้ามี
-            if (currentMarker) {
-                map.removeLayer(currentMarker);
-            }
             if (floodRiskArea) {
                 map.removeLayer(floodRiskArea);
             }
