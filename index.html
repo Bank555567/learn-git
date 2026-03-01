@@ -24,10 +24,8 @@
 <body>
     <div class="container">
         <h1>Flood Prediction Platform</h1>
-        <label for="location">Enter Location: </label>
-        <input type="text" id="location" placeholder="e.g., Chiang Mai">
         <button id="locationButton">Get Location</button>
-        <button onclick="getFloodPrediction()">Get Flood Prediction</button>
+        <button id="predictionButton" disabled>Prediction</button>
     </div>
 
     <div id="map"></div>
@@ -38,6 +36,9 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+
+        let currentLat = null;
+        let currentLon = null;
 
         // Function to fetch and display location using Geolocation API
         function getLocation() {
@@ -51,19 +52,22 @@
 
         // Function to display the position on the map
         function showPosition(position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
+            currentLat = position.coords.latitude;
+            currentLon = position.coords.longitude;
 
-            console.log("Latitude: " + lat);
-            console.log("Longitude: " + lon);
+            console.log("Latitude: " + currentLat);
+            console.log("Longitude: " + currentLon);
 
             // Set map view to the current position
-            map.setView([lat, lon], 12); // Zoom in on the current position
+            map.setView([currentLat, currentLon], 12); // Zoom in on the current position
 
             // Add a marker to the map
-            L.marker([lat, lon]).addTo(map)
-                .bindPopup(`<b>Your Location</b><br>Lat: ${lat}, Lon: ${lon}`)
+            L.marker([currentLat, currentLon]).addTo(map)
+                .bindPopup(`<b>Your Location</b><br>Lat: ${currentLat}, Lon: ${currentLon}`)
                 .openPopup();
+
+            // Enable "Prediction" button after getting location
+            document.getElementById('predictionButton').disabled = false;
         }
 
         // Error handling if geolocation fails
@@ -85,20 +89,17 @@
         }
 
         // Function to simulate flood prediction and create flood risk area on the map
-        function getFloodPrediction() {
-            const locationName = document.getElementById('location').value;
-            if (!locationName) {
-                alert('Please enter a location');
+        function createFloodRiskArea() {
+            if (currentLat === null || currentLon === null) {
+                alert('Please get location first');
                 return;
             }
 
             // Simulate fetching flood risk area and prediction data (in real case, fetch from API)
-            const lat = 13.10;  // Simulated latitude
-            const lon = 100.10; // Simulated longitude
             const floodDepth = 30; // Simulated flood depth (in cm)
 
             // Create flood risk area (blue circle)
-            L.circle([lat, lon], {
+            L.circle([currentLat, currentLon], {
                 color: 'blue',
                 fillColor: 'blue',
                 fillOpacity: 0.4,
@@ -107,20 +108,24 @@
 
             // Example of showing water flow direction (red arrow)
             L.polyline([
-                [lat, lon], 
-                [lat + 0.02, lon + 0.02]  // Example of water flow direction
+                [currentLat, currentLon], 
+                [currentLat + 0.02, currentLon + 0.02]  // Example of water flow direction
             ], {color: 'red', weight: 3, opacity: 0.7}).addTo(map);
 
             // Add an arrow marker to show direction
-            L.marker([lat + 0.02, lon + 0.02], {icon: L.divIcon({
+            L.marker([currentLat + 0.02, currentLon + 0.02], {icon: L.divIcon({
                 className: 'leaflet-div-icon',
                 html: '<span style="font-size: 20px; color: red;">&#8594;</span>'
             })}).addTo(map);
         }
 
-        // Attach event listener to button
+        // Attach event listener to the "Get Location" button
         const locationButton = document.getElementById('locationButton');
         locationButton.addEventListener('click', getLocation);
+
+        // Attach event listener to the "Prediction" button
+        const predictionButton = document.getElementById('predictionButton');
+        predictionButton.addEventListener('click', createFloodRiskArea);
     </script>
 </body>
 </html>
