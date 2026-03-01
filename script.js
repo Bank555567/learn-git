@@ -122,16 +122,11 @@ function createFloodRiskArea() {
     })}).addTo(map);
 }
 
-$(document).ready(function () {
-    // เรียกข้อมูลพยากรณ์อากาศ
-    getHourlyForecastByCoordinates(locationData.lat, locationData.lon)
-        .done(function (response) {
-            console.log("Hourly Forecast by Coordinates:", response);
-        })
-        .fail(function (error) {
-            console.error("Error fetching hourly forecast by coordinates:", error);
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    // เมื่อโหลดหน้าเว็บเสร็จแล้ว
+    const locationButton = document.getElementById('locationButton');
+    locationButton.addEventListener('click', getLocation);
 
-    // เรียกใช้แผนที่
-    initializeMap(locationData.lat, locationData.lon);
+    const predictionButton = document.getElementById('predictionButton');
+    predictionButton.addEventListener('click', createFloodRiskArea);
 });
