@@ -1,11 +1,12 @@
-const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImYyZGUyZjgzODRjYmVhNmUzOTI5NjRiNGYwNDdmNWE5NzI2YWVlZmRmOWRkNjU1MTRmYTdjMzFkZjY0MzI2NjQwYWY5OTI5ZGY0YThiNThlIn0.eyJhdWQiOiIyIiwianRpIjoiZjJkZTJmODM4NGNiZWE2ZTM5Mjk2NGI0ZjA0N2Y1YTk3MjZhZWVmZGY5ZGQ2NTUxNGZhN2MzMWRmNjQzMjY2NDBhZjk5MjlkZjRhOGI1OGUiLCJpYXQiOjE3NzIzNjgwMzksIm5iZiI6MTc3MjM2ODAzOSwiZXhwIjoxODAzOTA0MDM5LCJzdWIiOiI0OTkxIiwic2NvcGVzIjpbXX0.qdpetFYUHGdXDW2qeZGMpuPKsKyR9crmWysYiKc5436N1YDALzhQYmjYSdB_Fsl2u4MuvfI6uey3E-WQL2T22SVSgilPKnGGyyQv7VDdRFGBFiBp2KO6SUzBuIhZFN9sodPmdJyryeyFrEO9eb9a69vkVGpaMfFIJ1TJAu0oVV8yXXZdSn_sj7l9LzeIHjEbgSyN9aq7NLIQVt2twMtFJGxn1BSo9GdOk1q2w_Tp-icfjM6rG0EUP-lWHr-n5gRrY_mQs3BxTgNto71uBRkl3I8Kjwi58ky67wqrEhrHv7hmucwc32PA2cT2ms6QEzym3iMohuqEXAhN-f8GYslZZ06R88rEG_cDeafXZhyhhAiVhxaJmXlTZ7nCaP40ph9CY3t8rH5JRW2bibW9Xso05plqNSkaAjXij6RUD48v9iMUsaNDKAqeBwsVF9clB3DcjqcGzL4QWb19AuHZOyXayACUfSJYml8llztciEKRqIrUSUaYuBcseOi3bzfJsWEthjcaLKpAaJeVWJzqbwt78Cmj3JbQxzTvJSm5SjX385s-kMqgSKio5AEVRyub92FHkd3duqGqaRb2Hj_dlMGtNB-zkMW0lFjOLdbrPzxIvHr0rPyOcj3KWdLEqZYYbwGvSL9QpaBlHzfjz93eogRY34u-jAL_1-osl0gOs6ICLlo'; // ใส่ token ของคุณ
+const accessToken = 'YOUR_ACCESS_TOKEN'; // ใส่ token ของคุณ
 
 const locationData = {
     "lat": 13.10, // พิกัดละติจูด
     "lon": 100.10, // พิกัดลองจิจูด
-    "province": "เชียงใหม่", // ชื่อจังหวัด
-    "amphoe": "เมืองเชียงใหม่", // ชื่ออำเภอ
-    "fields": "tc,rh,cond" // ตัวแปรที่ต้องการ เช่น อุณหภูมิ, ความชื้น, สภาพอากาศ
+    "fields": "tc,rh,cond", // ตัวแปรที่ต้องการ เช่น อุณหภูมิ, ความชื้น, สภาพอากาศ
+    "date": "2023-03-01", // ใช้วันที่ที่ถูกต้อง
+    "hour": 8, // ชั่วโมงเริ่มต้น
+    "duration": 2, // จำนวนชั่วโมงที่ต้องการ
 };
 
 // ฟังก์ชันในการเรียกข้อมูลพยากรณ์อากาศรายชั่วโมงจาก TMD API โดยใช้พิกัด (lat, lon)
@@ -13,21 +14,7 @@ function getHourlyForecastByCoordinates(lat, lon) {
     return $.ajax({
         "async": true,
         "crossDomain": true,
-        "url": `https://data.tmd.go.th/nwpapi/v1/forecast/location/hourly/at?lat=${lat}&lon=${lon}&fields=${locationData.fields}&date=2022-08-17&hour=8&duration=2`,
-        "method": "GET",
-        "headers": {
-            "accept": "application/json",
-            "authorization": `Bearer ${accessToken}`,
-        }
-    });
-}
-
-// ฟังก์ชันในการเรียกข้อมูลพยากรณ์อากาศรายวันจาก TMD API โดยใช้พิกัด (lat, lon)
-function getDailyForecastByCoordinates(lat, lon) {
-    return $.ajax({
-        "async": true,
-        "crossDomain": true,
-        "url": `https://data.tmd.go.th/nwpapi/v1/forecast/location/daily/at?lat=${lat}&lon=${lon}&fields=tc_max,rh&date=2017-08-17&duration=2`,
+        "url": `https://data.tmd.go.th/nwpapi/v1/forecast/location/hourly/at?lat=${lat}&lon=${lon}&fields=${locationData.fields}&date=${locationData.date}&hour=${locationData.hour}&duration=${locationData.duration}`,
         "method": "GET",
         "headers": {
             "accept": "application/json",
@@ -46,7 +33,12 @@ function initializeMap(lat, lon) {
     }).addTo(map);
 
     // เพิ่ม Marker ตำแหน่งที่ได้รับ
-    L.marker([lat, lon]).addTo(map)
+    L.marker([lat, lon], {
+        icon: L.icon({
+            iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+            shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png'
+        })
+    }).addTo(map)
         .bindPopup(`<b>Your Location</b><br>Lat: ${lat}, Lon: ${lon}`)
         .openPopup();
 }
@@ -90,7 +82,6 @@ function createFloodRiskArea() {
     })}).addTo(map);
 }
 
-// การจัดการตำแหน่งผู้ใช้งาน
 $(document).ready(function () {
     // เรียกข้อมูลพยากรณ์อากาศ
     getHourlyForecastByCoordinates(locationData.lat, locationData.lon)
@@ -99,14 +90,6 @@ $(document).ready(function () {
         })
         .fail(function (error) {
             console.error("Error fetching hourly forecast by coordinates:", error);
-        });
-
-    getDailyForecastByCoordinates(locationData.lat, locationData.lon)
-        .done(function (response) {
-            console.log("Daily Forecast by Coordinates:", response);
-        })
-        .fail(function (error) {
-            console.error("Error fetching daily forecast by coordinates:", error);
         });
 
     // เรียกใช้แผนที่
