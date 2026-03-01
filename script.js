@@ -1,4 +1,4 @@
-let map; // ประกาศตัวแปร map เป็น global
+let map; // ประกาศตัวแปร map ที่เป็น global
 
 const accessToken = 'YOUR_ACCESS_TOKEN'; // ใส่ token ของคุณ
 
@@ -13,22 +13,26 @@ const locationData = {
 
 // ฟังก์ชันในการแสดงแผนที่ด้วย Leaflet.js
 function initializeMap(lat, lon) {
-    map = L.map('map').setView([lat, lon], 12); // กำหนดจุดเริ่มต้นแผนที่
+    try {
+        map = L.map('map').setView([lat, lon], 12); // กำหนดจุดเริ่มต้นแผนที่
 
-    // ตั้งค่าแผนที่ (ใช้ OpenStreetMap)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+        // ตั้งค่าแผนที่ (ใช้ OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-    // เพิ่ม Marker ตำแหน่งที่ได้รับ
-    L.marker([lat, lon], {
-        icon: L.icon({
-            iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-            shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png'
-        })
-    }).addTo(map)
-        .bindPopup(`<b>Your Location</b><br>Lat: ${lat}, Lon: ${lon}`)
-        .openPopup();
+        // เพิ่ม Marker ตำแหน่งที่ได้รับ
+        L.marker([lat, lon], {
+            icon: L.icon({
+                iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+                shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png'
+            })
+        }).addTo(map)
+            .bindPopup(`<b>Your Location</b><br>Lat: ${lat}, Lon: ${lon}`)
+            .openPopup();
+    } catch (error) {
+        console.error("Error initializing map:", error);
+    }
 }
 
 // ฟังก์ชันในการค้นหาตำแหน่งของผู้ใช้
@@ -50,15 +54,17 @@ function showPosition(position) {
     console.log("Longitude: " + currentLon);
 
     // ปรับแผนที่ไปยังตำแหน่งของผู้ใช้
-    map.setView([currentLat, currentLon], 12); // Zoom in on the current position
+    if (map) {
+        map.setView([currentLat, currentLon], 12); // Zoom in on the current position
 
-    // เพิ่ม Marker ที่ตำแหน่งของผู้ใช้
-    L.marker([currentLat, currentLon]).addTo(map)
-        .bindPopup(`<b>Your Location</b><br>Lat: ${currentLat}, Lon: ${currentLon}`)
-        .openPopup();
+        // เพิ่ม Marker ที่ตำแหน่งของผู้ใช้
+        L.marker([currentLat, currentLon]).addTo(map)
+            .bindPopup(`<b>Your Location</b><br>Lat: ${currentLat}, Lon: ${currentLon}`)
+            .openPopup();
 
-    // เปิดใช้งานปุ่ม Prediction หลังจากได้ตำแหน่ง
-    document.getElementById('predictionButton').disabled = false;
+        // เปิดใช้งานปุ่ม Prediction หลังจากได้ตำแหน่ง
+        document.getElementById('predictionButton').disabled = false;
+    }
 }
 
 // ฟังก์ชันจัดการข้อผิดพลาดเมื่อไม่สามารถค้นหาตำแหน่ง
