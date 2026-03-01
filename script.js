@@ -1,4 +1,4 @@
-let map; // ประกาศตัวแปร map ที่เป็น global
+let map; // ประกาศตัวแปร map เป็น global
 
 const accessToken = 'YOUR_ACCESS_TOKEN'; // ใส่ token ของคุณ
 
@@ -118,8 +118,9 @@ function createFloodRiskArea() {
     })}).addTo(map);
 }
 
+// เมื่อโหลดหน้าเว็บเสร็จแล้ว
 document.addEventListener('DOMContentLoaded', function () {
-    // เมื่อโหลดหน้าเว็บเสร็จแล้ว
+    // เรียกใช้ฟังก์ชันในการค้นหาตำแหน่งของผู้ใช้
     const locationButton = document.getElementById('locationButton');
     locationButton.addEventListener('click', getLocation);
 
