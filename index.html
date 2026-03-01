@@ -4,22 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flood Prediction Platform</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        #map {
-            height: 100vh; /* ขยายแผนที่ให้เต็มจอ */
-            width: 100%;
-        }
-        .container {
-            width: 50%;
-            margin: 20px auto;
-            padding: 10px;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css"> <!-- เชื่อมโยงกับไฟล์ CSS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
     <div class="container">
@@ -28,114 +14,8 @@
         <button id="predictionButton" disabled>Prediction</button>
     </div>
 
-    <div id="map"></div>
+    <div id="map"></div> <!-- พื้นที่แสดงแผนที่ -->
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        const map = L.map('map').setView([13.10, 100.10], 10); // Default to Chiang Mai
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        let currentLat = null;
-        let currentLon = null;
-        let floodRiskArea = null; // เก็บพื้นที่สีฟ้า
-        let floodDirection = null; // เก็บทิศทางการไหลของน้ำ
-
-        // Function to fetch and display location using Geolocation API
-        function getLocation() {
-            console.log("getLocation function called!");
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
-            } else {
-                console.log("Geolocation is not supported by this browser.");
-            }
-        }
-
-        // Function to display the position on the map
-        function showPosition(position) {
-            currentLat = position.coords.latitude;
-            currentLon = position.coords.longitude;
-
-            console.log("Latitude: " + currentLat);
-            console.log("Longitude: " + currentLon);
-
-            // Set map view to the current position
-            map.setView([currentLat, currentLon], 12); // Zoom in on the current position
-
-            // Add a marker to the map
-            L.marker([currentLat, currentLon]).addTo(map)
-                .bindPopup(`<b>Your Location</b><br>Lat: ${currentLat}, Lon: ${currentLon}`)
-                .openPopup();
-
-            // Enable "Prediction" button after getting location
-            document.getElementById('predictionButton').disabled = false;
-        }
-
-        // Error handling if geolocation fails
-        function showError(error) {
-            switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    alert("User denied the request for Geolocation.");
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    alert("Location information is unavailable.");
-                    break;
-                case error.TIMEOUT:
-                    alert("The request to get user location timed out.");
-                    break;
-                case error.UNKNOWN_ERROR:
-                    alert("An unknown error occurred.");
-                    break;
-            }
-        }
-
-        // Function to simulate flood prediction and create flood risk area on the map
-        function createFloodRiskArea() {
-            if (currentLat === null || currentLon === null) {
-                alert('Please get location first');
-                return;
-            }
-
-            // ลบพื้นที่เดิมถ้ามี
-            if (floodRiskArea) {
-                map.removeLayer(floodRiskArea);
-            }
-            if (floodDirection) {
-                map.removeLayer(floodDirection);
-            }
-
-            // Simulate fetching flood risk area and prediction data (in real case, fetch from API)
-            const floodDepth = 30; // Simulated flood depth (in cm)
-
-            // Create flood risk area (blue circle)
-            floodRiskArea = L.circle([currentLat, currentLon], {
-                color: 'blue',
-                fillColor: 'blue',
-                fillOpacity: 0.4,
-                radius: floodDepth * 100  // Radius based on flood depth
-            }).addTo(map).bindPopup(`Flood Risk Area: Depth ${floodDepth} cm`);
-
-            // Example of showing water flow direction (red arrow)
-            floodDirection = L.polyline([
-                [currentLat, currentLon], 
-                [currentLat + 0.02, currentLon + 0.02]  // Example of water flow direction
-            ], {color: 'red', weight: 3, opacity: 0.7}).addTo(map);
-
-            // Add an arrow marker to show direction
-            L.marker([currentLat + 0.02, currentLon + 0.02], {icon: L.divIcon({
-                className: 'leaflet-div-icon',
-                html: '<span style="font-size: 20px; color: red;">&#8594;</span>'
-            })}).addTo(map);
-        }
-
-        // Attach event listener to the "Get Location" button
-        const locationButton = document.getElementById('locationButton');
-        locationButton.addEventListener('click', getLocation);
-
-        // Attach event listener to the "Prediction" button
-        const predictionButton = document.getElementById('predictionButton');
-        predictionButton.addEventListener('click', createFloodRiskArea);
-    </script>
+    <script src="script.js"></script> <!-- เชื่อมโยงกับไฟล์ JS -->
 </body>
 </html>
