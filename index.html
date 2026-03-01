@@ -39,6 +39,8 @@
 
         let currentLat = null;
         let currentLon = null;
+        let floodRiskArea = null; // เก็บพื้นที่สีฟ้า
+        let floodDirection = null; // เก็บทิศทางการไหลของน้ำ
 
         // Function to fetch and display location using Geolocation API
         function getLocation() {
@@ -95,11 +97,19 @@
                 return;
             }
 
+            // ลบพื้นที่เดิมถ้ามี
+            if (floodRiskArea) {
+                map.removeLayer(floodRiskArea);
+            }
+            if (floodDirection) {
+                map.removeLayer(floodDirection);
+            }
+
             // Simulate fetching flood risk area and prediction data (in real case, fetch from API)
             const floodDepth = 30; // Simulated flood depth (in cm)
 
             // Create flood risk area (blue circle)
-            L.circle([currentLat, currentLon], {
+            floodRiskArea = L.circle([currentLat, currentLon], {
                 color: 'blue',
                 fillColor: 'blue',
                 fillOpacity: 0.4,
@@ -107,7 +117,7 @@
             }).addTo(map).bindPopup(`Flood Risk Area: Depth ${floodDepth} cm`);
 
             // Example of showing water flow direction (red arrow)
-            L.polyline([
+            floodDirection = L.polyline([
                 [currentLat, currentLon], 
                 [currentLat + 0.02, currentLon + 0.02]  // Example of water flow direction
             ], {color: 'red', weight: 3, opacity: 0.7}).addTo(map);
