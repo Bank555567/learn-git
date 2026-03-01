@@ -13,10 +13,8 @@ const locationData = {
 
 // ฟังก์ชันในการแสดงแผนที่ด้วย Leaflet.js
 function initializeMap(lat, lon) {
-    // ตรวจสอบว่า map ถูกกำหนดหรือไม่
-    if (!map) {
-        map = L.map('map').setView([lat, lon], 12); // กำหนดจุดเริ่มต้นแผนที่
-    }
+    // กำหนดจุดเริ่มต้นแผนที่
+    map = L.map('map').setView([lat, lon], 12); // กำหนดจุดเริ่มต้นแผนที่
 
     // ตั้งค่าแผนที่ (ใช้ OpenStreetMap)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -52,9 +50,8 @@ function showPosition(position) {
     console.log("Latitude: " + currentLat);
     console.log("Longitude: " + currentLon);
 
-    // ตรวจสอบว่า map ถูกสร้างแล้วหรือยัง
+    // ปรับแผนที่ไปยังตำแหน่งของผู้ใช้
     if (map) {
-        // ปรับแผนที่ไปยังตำแหน่งของผู้ใช้
         map.setView([currentLat, currentLon], 12); // Zoom in on the current position
 
         // เพิ่ม Marker ที่ตำแหน่งของผู้ใช้
@@ -124,8 +121,9 @@ function createFloodRiskArea() {
     })}).addTo(map);
 }
 
+// เมื่อโหลดหน้าเว็บเสร็จแล้ว
 document.addEventListener('DOMContentLoaded', function () {
-    // เมื่อโหลดหน้าเว็บเสร็จแล้ว
+    // เรียกใช้ฟังก์ชันในการค้นหาตำแหน่งของผู้ใช้
     const locationButton = document.getElementById('locationButton');
     locationButton.addEventListener('click', getLocation);
 
