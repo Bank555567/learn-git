@@ -24,7 +24,10 @@
 <body>
     <div class="container">
         <h1>Flood Prediction Platform</h1>
+        <label for="location">Enter Location: </label>
+        <input type="text" id="location" placeholder="e.g., Chiang Mai">
         <button id="locationButton">Get Location</button>
+        <button onclick="getFloodPrediction()">Get Flood Prediction</button>
     </div>
 
     <div id="map"></div>
@@ -81,7 +84,41 @@
             }
         }
 
-        // Attach the event listener to the button
+        // Function to simulate flood prediction and create flood risk area on the map
+        function getFloodPrediction() {
+            const locationName = document.getElementById('location').value;
+            if (!locationName) {
+                alert('Please enter a location');
+                return;
+            }
+
+            // Simulate fetching flood risk area and prediction data (in real case, fetch from API)
+            const lat = 13.10;  // Simulated latitude
+            const lon = 100.10; // Simulated longitude
+            const floodDepth = 30; // Simulated flood depth (in cm)
+
+            // Create flood risk area (blue circle)
+            L.circle([lat, lon], {
+                color: 'blue',
+                fillColor: 'blue',
+                fillOpacity: 0.4,
+                radius: floodDepth * 100  // Radius based on flood depth
+            }).addTo(map).bindPopup(`Flood Risk Area: Depth ${floodDepth} cm`);
+
+            // Example of showing water flow direction (red arrow)
+            L.polyline([
+                [lat, lon], 
+                [lat + 0.02, lon + 0.02]  // Example of water flow direction
+            ], {color: 'red', weight: 3, opacity: 0.7}).addTo(map);
+
+            // Add an arrow marker to show direction
+            L.marker([lat + 0.02, lon + 0.02], {icon: L.divIcon({
+                className: 'leaflet-div-icon',
+                html: '<span style="font-size: 20px; color: red;">&#8594;</span>'
+            })}).addTo(map);
+        }
+
+        // Attach event listener to button
         const locationButton = document.getElementById('locationButton');
         locationButton.addEventListener('click', getLocation);
     </script>

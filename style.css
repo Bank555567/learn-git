@@ -1,21 +1,74 @@
+/* กำหนดฟอนต์หลักให้สวยงาม */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;  /* กำหนดสีพื้นหลัง */
 }
 
-#map {
-    height: 100vh; /* ขยายแผนที่ให้เต็มจอ */
-    width: 100%;
-}
-
-.container {
-    width: 50%;
-    margin: 20px auto;
-    padding: 10px;
+/* กำหนดสีและรูปแบบสำหรับแถบด้านบน */
+h1 {
+    color: #333; /* สีฟอนต์ */
     text-align: center;
+    margin-top: 20px;
 }
 
+/* ปรับให้ปุ่มดูดี */
 button {
-    padding: 10px 20px;
+    background-color: #4CAF50; /* สีปุ่ม */
+    color: white; /* สีข้อความบนปุ่ม */
+    padding: 15px 32px; /* ขนาดของปุ่ม */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
     font-size: 16px;
+    margin: 10px 0;
     cursor: pointer;
+    border: none;
+    border-radius: 8px; /* ขอบมน */
+    transition: background-color 0.3s; /* การเปลี่ยนสีเมื่อ hover */
+}
+
+/* เปลี่ยนสีเมื่อ mouse hover บนปุ่ม */
+button:hover {
+    background-color: #45a049; /* สีปุ่มเมื่อ hover */
+}
+
+/* แสดงแผนที่ให้เต็มจอ */
+#map {
+    height: 80vh; /* แผนที่จะมีความสูง 80% ของความสูงหน้าจอ */
+    width: 100%;
+    border-radius: 8px; /* ทำมุมให้มน */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้แผนที่ */
+}
+
+/* จัดการกับกล่องการค้นหาตำแหน่ง */
+.container {
+    width: 60%;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ปรับสไตล์สำหรับช่องกรอกข้อมูล */
+input[type="text"] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* ทำให้หน้าเว็บ responsive บนมือถือ */
+@media (max-width: 768px) {
+    .container {
+        width: 80%; /* ปรับความกว้างให้เหมาะกับหน้าจอมือถือ */
+    }
+    #map {
+        height: 60vh; /* ลดความสูงของแผนที่บนมือถือ */
+    }
 }
