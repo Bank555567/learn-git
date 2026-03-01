@@ -122,7 +122,6 @@ function createFloodRiskArea() {
     })}).addTo(map);
 }
 
-// การจัดการตำแหน่งผู้ใช้งาน
 $(document).ready(function () {
     // เรียกข้อมูลพยากรณ์อากาศ
     getHourlyForecastByCoordinates(locationData.lat, locationData.lon)
@@ -131,14 +130,6 @@ $(document).ready(function () {
         })
         .fail(function (error) {
             console.error("Error fetching hourly forecast by coordinates:", error);
-        });
-
-    getDailyForecastByCoordinates(locationData.lat, locationData.lon)
-        .done(function (response) {
-            console.log("Daily Forecast by Coordinates:", response);
-        })
-        .fail(function (error) {
-            console.error("Error fetching daily forecast by coordinates:", error);
         });
 
     // เรียกใช้แผนที่
