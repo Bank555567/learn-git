@@ -13,26 +13,22 @@ const locationData = {
 
 // ฟังก์ชันในการแสดงแผนที่ด้วย Leaflet.js
 function initializeMap(lat, lon) {
-    try {
-        map = L.map('map').setView([lat, lon], 12); // กำหนดจุดเริ่มต้นแผนที่
+    map = L.map('map').setView([lat, lon], 12); // กำหนดจุดเริ่มต้นแผนที่
 
-        // ตั้งค่าแผนที่ (ใช้ OpenStreetMap)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+    // ตั้งค่าแผนที่ (ใช้ OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-        // เพิ่ม Marker ตำแหน่งที่ได้รับ
-        L.marker([lat, lon], {
-            icon: L.icon({
-                iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-                shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png'
-            })
-        }).addTo(map)
-            .bindPopup(`<b>Your Location</b><br>Lat: ${lat}, Lon: ${lon}`)
-            .openPopup();
-    } catch (error) {
-        console.error("Error initializing map:", error);
-    }
+    // เพิ่ม Marker ตำแหน่งที่ได้รับ
+    L.marker([lat, lon], {
+        icon: L.icon({
+            iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+            shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png'
+        })
+    }).addTo(map)
+        .bindPopup(`<b>Your Location</b><br>Lat: ${lat}, Lon: ${lon}`)
+        .openPopup();
 }
 
 // ฟังก์ชันในการค้นหาตำแหน่งของผู้ใช้
