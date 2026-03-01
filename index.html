@@ -24,8 +24,6 @@
 <body>
     <div class="container">
         <h1>Flood Prediction Platform</h1>
-        <label for="location">Enter Location: </label>
-        <input type="text" id="location" placeholder="e.g., Chiang Mai">
         <button id="locationButton">Get Location</button>
         <button id="predictionButton" disabled>Prediction</button>
     </div>
@@ -45,50 +43,51 @@
         let floodDirection = null; // เก็บทิศทางการไหลของน้ำ
         let currentMarker = null; // เก็บ Marker ของตำแหน่งล่าสุด
 
-        // Function to fetch latitude and longitude from the location name (Nominatim API)
-        async function getLocation() {
+        // Function to fetch and display location using Geolocation API
+        function getLocation() {
             console.log("getLocation function called!");
-            const locationName = document.getElementById('location').value;
-
-            if (locationName.trim() === "") {
-                alert("Please enter a location.");
-                return;
-            }
-
-            // ใช้ Nominatim API จาก OpenStreetMap เพื่อแปลงชื่อสถานที่เป็นพิกัด
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${locationName}&format=json&limit=1`);
-            const data = await response.json();
-
-            if (data && data.length > 0) {
-                currentLat = data[0].lat;
-                currentLon = data[0].lon;
-
-                console.log("Latitude: " + currentLat);
-                console.log("Longitude: " + currentLon);
-
-                // ลบ Marker และพื้นที่สีฟ้าเดิม (ถ้ามี)
-                if (currentMarker) {
-                    map.removeLayer(currentMarker);
-                }
-                if (floodRiskArea) {
-                    map.removeLayer(floodRiskArea);
-                }
-                if (floodDirection) {
-                    map.removeLayer(floodDirection);
-                }
-
-                // Set map view to the location found
-                map.setView([currentLat, currentLon], 12); // Zoom in on the current location
-
-                // เพิ่ม Marker ใหม่
-                currentMarker = L.marker([currentLat, currentLon]).addTo(map)
-                    .bindPopup(`<b>${locationName}</b><br>Lat: ${currentLat}, Lon: ${currentLon}`)
-                    .openPopup();
-
-                // Enable "Prediction" button after getting location
-                document.getElementById('predictionButton').disabled = false;
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
             } else {
-                alert("Location not found. Please try again.");
+                console.log("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // Function to display the position on the map
+        function showPosition(position) {
+            currentLat = position.coords.latitude;
+            currentLon = position.coords.longitude;
+
+            console.log("Latitude: " + currentLat);
+            console.log("Longitude: " + currentLon);
+
+            // Set map view to the current position
+            map.setView([currentLat, currentLon], 12); // Zoom in on the current position
+
+            // Add a marker to the map
+            currentMarker = L.marker([currentLat, currentLon]).addTo(map)
+                .bindPopup(`<b>Your Location</b><br>Lat: ${currentLat}, Lon: ${currentLon}`)
+                .openPopup();
+
+            // Enable "Prediction" button after getting location
+            document.getElementById('predictionButton').disabled = false;
+        }
+
+        // Error handling if geolocation fails
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
             }
         }
 
@@ -97,6 +96,17 @@
             if (currentLat === null || currentLon === null) {
                 alert('Please get location first');
                 return;
+            }
+
+            // ลบพื้นที่เดิมถ้ามี
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+            }
+            if (floodRiskArea) {
+                map.removeLayer(floodRiskArea);
+            }
+            if (floodDirection) {
+                map.removeLayer(floodDirection);
             }
 
             // Simulate fetching flood risk area and prediction data (in real case, fetch from API)
