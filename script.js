@@ -13,7 +13,10 @@ const locationData = {
 
 // ฟังก์ชันในการแสดงแผนที่ด้วย Leaflet.js
 function initializeMap(lat, lon) {
-    map = L.map('map').setView([lat, lon], 12); // กำหนดจุดเริ่มต้นแผนที่
+    // ตรวจสอบว่า map ถูกกำหนดหรือไม่
+    if (!map) {
+        map = L.map('map').setView([lat, lon], 12); // กำหนดจุดเริ่มต้นแผนที่
+    }
 
     // ตั้งค่าแผนที่ (ใช้ OpenStreetMap)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -49,16 +52,19 @@ function showPosition(position) {
     console.log("Latitude: " + currentLat);
     console.log("Longitude: " + currentLon);
 
-    // ปรับแผนที่ไปยังตำแหน่งของผู้ใช้
-    map.setView([currentLat, currentLon], 12); // Zoom in on the current position
+    // ตรวจสอบว่า map ถูกสร้างแล้วหรือยัง
+    if (map) {
+        // ปรับแผนที่ไปยังตำแหน่งของผู้ใช้
+        map.setView([currentLat, currentLon], 12); // Zoom in on the current position
 
-    // เพิ่ม Marker ที่ตำแหน่งของผู้ใช้
-    L.marker([currentLat, currentLon]).addTo(map)
-        .bindPopup(`<b>Your Location</b><br>Lat: ${currentLat}, Lon: ${currentLon}`)
-        .openPopup();
+        // เพิ่ม Marker ที่ตำแหน่งของผู้ใช้
+        L.marker([currentLat, currentLon]).addTo(map)
+            .bindPopup(`<b>Your Location</b><br>Lat: ${currentLat}, Lon: ${currentLon}`)
+            .openPopup();
 
-    // เปิดใช้งานปุ่ม Prediction หลังจากได้ตำแหน่ง
-    document.getElementById('predictionButton').disabled = false;
+        // เปิดใช้งานปุ่ม Prediction หลังจากได้ตำแหน่ง
+        document.getElementById('predictionButton').disabled = false;
+    }
 }
 
 // ฟังก์ชันจัดการข้อผิดพลาดเมื่อไม่สามารถค้นหาตำแหน่ง
@@ -118,9 +124,8 @@ function createFloodRiskArea() {
     })}).addTo(map);
 }
 
-// เมื่อโหลดหน้าเว็บเสร็จแล้ว
 document.addEventListener('DOMContentLoaded', function () {
-    // เรียกใช้ฟังก์ชันในการค้นหาตำแหน่งของผู้ใช้
+    // เมื่อโหลดหน้าเว็บเสร็จแล้ว
     const locationButton = document.getElementById('locationButton');
     locationButton.addEventListener('click', getLocation);
 
