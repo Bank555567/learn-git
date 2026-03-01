@@ -1,6 +1,6 @@
-const accessToken = 'YOUR_ACCESS_TOKEN'; // ใส่ token ของคุณ
-
 let map; // ประกาศตัวแปร map ที่เป็น global
+
+const accessToken = 'YOUR_ACCESS_TOKEN'; // ใส่ token ของคุณ
 
 const locationData = {
     "lat": 13.10, // พิกัดละติจูด
