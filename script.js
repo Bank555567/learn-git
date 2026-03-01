@@ -9,6 +9,54 @@ const locationData = {
     "duration": 2, // จำนวนชั่วโมงที่ต้องการ
 };
 
+// ฟังก์ชันในการค้นหาตำแหน่งของผู้ใช้
+function getLocation() {
+    console.log("getLocation function called!");
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+    }
+}
+
+// ฟังก์ชันในการแสดงตำแหน่งบนแผนที่
+function showPosition(position) {
+    const currentLat = position.coords.latitude;
+    const currentLon = position.coords.longitude;
+
+    console.log("Latitude: " + currentLat);
+    console.log("Longitude: " + currentLon);
+
+    // ปรับแผนที่ไปยังตำแหน่งของผู้ใช้
+    map.setView([currentLat, currentLon], 12); // Zoom in on the current position
+
+    // เพิ่ม Marker ที่ตำแหน่งของผู้ใช้
+    L.marker([currentLat, currentLon]).addTo(map)
+        .bindPopup(`<b>Your Location</b><br>Lat: ${currentLat}, Lon: ${currentLon}`)
+        .openPopup();
+
+    // เปิดใช้งานปุ่ม Prediction หลังจากได้ตำแหน่ง
+    document.getElementById('predictionButton').disabled = false;
+}
+
+// ฟังก์ชันจัดการข้อผิดพลาดเมื่อไม่สามารถค้นหาตำแหน่ง
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            alert("User denied the request for Geolocation.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            alert("The request to get user location timed out.");
+            break;
+        case error.UNKNOWN_ERROR:
+            alert("An unknown error occurred.");
+            break;
+    }
+}
+
 // ฟังก์ชันในการแสดงแผนที่ด้วย Leaflet.js
 function initializeMap(lat, lon) {
     const map = L.map('map').setView([lat, lon], 12); // กำหนดจุดเริ่มต้นแผนที่
@@ -27,60 +75,6 @@ function initializeMap(lat, lon) {
     }).addTo(map)
         .bindPopup(`<b>Your Location</b><br>Lat: ${lat}, Lon: ${lon}`)
         .openPopup();
-}
-
-// ฟังก์ชันในการเรียกข้อมูลพยากรณ์อากาศรายชั่วโมงจาก TMD API โดยใช้พิกัด (lat, lon)
-function getHourlyForecastByCoordinates(lat, lon) {
-    const url = `https://data.tmd.go.th/nwpapi/v1/forecast/location/hourly/at?lat=${lat}&lon=${lon}&fields=${locationData.fields}&date=${locationData.date}&hour=${locationData.hour}&duration=${locationData.duration}`;
-
-    fetch(url, {
-        method: 'GET',
-        headers: {
-            'accept': 'application/json',
-            'authorization': `Bearer ${accessToken}`
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-        // นำข้อมูลมาประมวลผล
-    })
-    .catch(error => {
-        console.error('Error fetching hourly forecast:', error);
-        alert('ไม่สามารถดึงข้อมูลพยากรณ์อากาศได้');
-    });
-}
-
-// ฟังก์ชันในการเรียกข้อมูลพยากรณ์อากาศรายวันจาก TMD API โดยใช้พิกัด (lat, lon)
-function getDailyForecastByCoordinates(lat, lon) {
-    const url = `https://data.tmd.go.th/nwpapi/v1/forecast/location/daily/at?lat=${lat}&lon=${lon}&fields=tc_max,rh&date=2017-08-17&duration=2`;
-
-    fetch(url, {
-        method: 'GET',
-        headers: {
-            'accept': 'application/json',
-            'authorization': `Bearer ${accessToken}`
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-        // นำข้อมูลมาประมวลผล
-    })
-    .catch(error => {
-        console.error('Error fetching daily forecast:', error);
-        alert('ไม่สามารถดึงข้อมูลพยากรณ์อากาศรายวันได้');
-    });
 }
 
 // ฟังก์ชันในการสร้างพื้นที่เสี่ยงน้ำท่วม
@@ -122,11 +116,13 @@ function createFloodRiskArea() {
     })}).addTo(map);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // เมื่อโหลดหน้าเว็บเสร็จแล้ว
+// เมื่อโหลดหน้าเว็บเสร็จแล้ว
+document.addEventListener('DOMContentLoaded', function () {
+    // เรียกใช้ฟังก์ชันในการค้นหาตำแหน่งของผู้ใช้
     const locationButton = document.getElementById('locationButton');
     locationButton.addEventListener('click', getLocation);
 
+    // เรียกใช้ฟังก์ชันในการสร้างพื้นที่เสี่ยงน้ำท่วม
     const predictionButton = document.getElementById('predictionButton');
     predictionButton.addEventListener('click', createFloodRiskArea);
 });
