@@ -116,9 +116,8 @@ function createFloodRiskArea() {
     })}).addTo(map);
 }
 
-// เมื่อโหลดหน้าเว็บเสร็จแล้ว
 document.addEventListener('DOMContentLoaded', function () {
-    // เรียกใช้ฟังก์ชันในการค้นหาตำแหน่งของผู้ใช้
+    // เมื่อโหลดหน้าเว็บเสร็จแล้ว
     const locationButton = document.getElementById('locationButton');
     locationButton.addEventListener('click', getLocation);
 
